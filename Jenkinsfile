@@ -4,42 +4,42 @@ pipeline {
 
     stages {
         stage('SCM Checkout'){
-          git 'https://github.com/prakashk0301/jenkins-example'
+          git 'https://github.com/afridi786/jenkins-example.git'
         }
   }
     {
         stage ('Compile Stage') {
 
             steps {
-                withMaven(maven : 'LocalMaven') {
-                    sh 'mvn clean compile'
-                }
+               withMaven(jdk: 'LOCAL_JDK', maven: 'LOCAL_MAVEN') { 
+						sh 'mvn clean compile'
+			 		}
             }
         }
 
         stage ('Testing Stage') {
 
             steps {
-                withMaven(maven : 'LocalMaven') {
-                    sh 'mvn test'
-                }
+               withMaven(jdk: 'LOCAL_JDK', maven: 'LOCAL_MAVEN') { 
+						sh 'mvn test'
+			 		}
             }
         }
 
 
         stage ('install Stage') {
             steps {
-                withMaven(maven : 'LocalMaven') {
-                    sh 'mvn install'
-                }
+               withMaven(jdk: 'LOCAL_JDK', maven: 'LOCAL_MAVEN') { 
+						sh 'mvn clean install'
+			 		}
             }
         }
 
          stage ('deploy to tomcat') {
              steps {
-                 sshagent(['c4314358-27ee-4704-859a-44ddcb0fc88b']) {
-                 sh 'scp -o StrictHostKeyChecking=no target/*.jar ec2-user@172.31.42.125:/var/lib/tomcat/webapps/'
-      }
+                 sshagent(['NewTomcatForMaven']) {
+   					sh 'ssh -o StrictHostKeyChecking=no */target/*.war ec2-user@172.31.41.161:/var/lib/tomcat/webapps'
+						}
              }
    }
 }
