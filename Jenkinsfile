@@ -10,15 +10,10 @@ pipeline {
 		 steps{
           git 'https://github.com/afridi786/jenkins-example.git'
 			}
-		}
-         stage ('Compile Stage') {
-            steps {
-               sh 'mvn clean compile'
-            }
-        }
+	}
         stage ('Testing Stage') {
             steps {
-               sh 'mvn test'
+               sh 'mvn validate'
             }
         }
         stage ('install Stage') {
