@@ -1,29 +1,25 @@
 pipeline {
     agent any
-tools{
-             jdk 'LOCAL_JDK'
-			 maven 'LOCAL_MAVEN'
-       }
+	tools{
+		jdk 'LOCAL_JDK'
+		maven 'LOCAL_MAVEN' 
+	}
+
     stages {
-        stage ('Compile Stage') {
-
-            steps {
-                    sh 'mvn clean compile'
-                  }
-        }
-
+        stage('SCM Checkout'){
+		 steps{
+          git 'https://github.com/afridi786/jenkins-example.git'
+			}
+	}
         stage ('Testing Stage') {
-
             steps {
-               sh 'mvn clean test'
+               sh 'mvn validate'
             }
         }
-
-
-        stage ('Deployment Stage') {
+        stage ('install Stage') {
             steps {
-                sh 'mvn deploy'
+               sh 'mvn clean install'
             }
         }
-    }
+	}
 }
