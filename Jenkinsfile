@@ -1,33 +1,25 @@
 pipeline {
     agent any
+	tools{
+		jdk 'LOCAL_JDK'
+		maven 'LOCAL_MAVEN' 
+	}
 
     stages {
-        stage ('Compile Stage') {
-
+        stage('SCM Checkout'){
+		 steps{
+          git 'https://github.com/afridi786/jenkins-example.git'
+			}
+	}
+        stage ('Testing Stage') {
             steps {
-                withMaven(maven : 'maven_3_5_0') {
-                    sh 'mvn clean install'
-                }
+               sh 'mvn validate'
             }
         }
-
-    /*    stage ('Testing Stage') {
-
+        stage ('install Stage') {
             steps {
-                withMaven(maven : 'maven_3_5_0') {
-                    sh 'mvn test'
-                }
+               sh 'mvn clean install'
             }
         }
-*/
-
-        stage ('Deployment Stage') {
-            steps {
-
-                sh '/usr/local/bin/aws s3 cp target/jenkins-example*.jar s3://techprimers-s3/'
-                sh '/usr/local/bin/aws s3 ls'
-                sh '/usr/local/bin/aws s3 ls s3://techprimers-s3/'
-            }
-        }
-    }
+	}
 }
