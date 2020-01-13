@@ -1,32 +1,27 @@
 pipeline {
     agent any
+	tools{
+		jdk 'LOCAL_JDK'
+		maven 'LOCAL_MAVEN' 
+	}
 
     stages {
-        stage ('Compile Stage') {
-
-            steps {
-                withMaven(maven : 'maven_3_5_0') {
-                    sh 'mvn clean install'
-                }
-            }
-        }
-
+        stage('SCM Checkout'){
+		 steps{
+          git 'https://github.com/afridi786/jenkins-example.git'
+			}
+	}
         stage ('Testing Stage') {
-
             steps {
-                withMaven(maven : 'maven_3_5_0') {
-                    sh 'mvn test'
-                }
+               sh 'mvn validate'
             }
         }
-
-        stage('Generate HTML report') {
+        stage ('install Stage') {
             steps {
-                cucumber buildStatus: "UNSTABLE",
-                        fileIncludePattern: '**/cucumber.json',
-                        jsonReportDirectory: 'target'
+               sh 'mvn clean install'
             }
-
         }
-    }
+	}
 }
+
+       
